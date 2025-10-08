@@ -60,25 +60,6 @@ This project is built using:
 ## 📁 Project Structure
 
 ```
-Portofolio Website
-├─ desktop.ini
-├─ img
-│  └─ saya1.png
-├─ index.html
-├─ README.md
-├─ script.js
-└─ style.css
-
-```
-
-## ✨ Features
-
-- Real-time text detection from camera
-- Image text recognition from gallery
-- Terminal logging for debugging
-- Camera & Storage permission handling
-
-```
 flutter_text_recognition
 ├─ android/
 ├─ ios/
@@ -97,3 +78,10 @@ flutter_text_recognition
 ├─ pubspec.yaml
 ├─ README.md
 ```
+
+## ✨ Features
+
+- Real-time text detection from camera
+- Image text recognition from gallery
+- Terminal logging for debugging
+- Camera & Storage permission handling
