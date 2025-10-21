@@ -17,11 +17,25 @@ class _CameraScreenState extends State<CameraScreen> {
   String _recognizedText = 'Tekan capture untuk scan teks';
   bool _isProcessing = false;
 
+  TextRecognitionScript _currentScript = TextRecognitionScript.latin;
+
   @override
   void initState() {
     super.initState();
     _initializeCamera();
-    _textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
+    // _textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
+    _textRecognizer = TextRecognizer(script: _currentScript);
+  }
+
+  // Method untuk ganti bahasa
+  void _changeLanguage(TextRecognitionScript newScript) {
+    _textRecognizer.close();
+
+    // buat recognizer baru dengan bahasa yang ingin dipilih
+    setState(() {
+      _currentScript = newScript;
+      _textRecognizer = TextRecognizer(script: _currentScript);
+    });
   }
 
   void _initializeCamera() async {
@@ -65,6 +79,58 @@ class _CameraScreenState extends State<CameraScreen> {
     } finally {
       setState(() => _isProcessing = false);
     }
+  }
+
+  void _showLanguageSelection() { // Dialog Language Selection
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Pilih Bahasa'),
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                ListTile(
+                  title: Text('English, Indonesia, dll'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _changeLanguage(TextRecognitionScript.latin);
+                  },
+                ),
+                ListTile(
+                  title: Text('Chinese'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _changeLanguage(TextRecognitionScript.chinese);
+                  },
+                ),
+                ListTile(
+                  title: Text('Devanagari'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _changeLanguage(TextRecognitionScript.devanagiri);
+                  },
+                ),
+                ListTile(
+                  title: Text('Japanese'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _changeLanguage(TextRecognitionScript.japanese);
+                  },
+                ),
+                ListTile(
+                  title: Text('Korean'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _changeLanguage(TextRecognitionScript.korean);
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      }
+    );
   }
 
   // memilih sumber gambar
@@ -203,6 +269,43 @@ class _CameraScreenState extends State<CameraScreen> {
     }
 
     return Scaffold(
+      appBar: AppBar(
+        actions: [
+          DropdownButton<TextRecognitionScript>( //* Dropdown button untuk pilihan bahasa
+            value: _currentScript,
+            icon: Icon(Icons.language, color: Colors.black),
+            dropdownColor: Colors.blue,
+            onChanged: (TextRecognitionScript? newScript) {
+              if (newScript != null) {
+                _changeLanguage(newScript);
+              }
+            },
+            items: [
+              DropdownMenuItem(
+                value: TextRecognitionScript.latin,
+                child: Text('Latin', style: TextStyle(color: Colors.black)),
+              ),
+              DropdownMenuItem(
+                value: TextRecognitionScript.chinese,
+                child: Text('Chinese', style: TextStyle(color: Colors.black)),
+              ),
+              DropdownMenuItem(
+                value: TextRecognitionScript.devanagiri,
+                child: Text('Devanagiri', style: TextStyle(color: Colors.black)),
+              ),
+              DropdownMenuItem(
+                value: TextRecognitionScript.japanese,
+                child: Text('Japanese', style: TextStyle(color: Colors.black)),
+              ),
+              DropdownMenuItem(
+                value: TextRecognitionScript.korean,
+                child: Text('Korean', style: TextStyle(color: Colors.black)),
+              ),
+            ],
+          ),
+          SizedBox(width: 20),
+        ],
+      ),
       body: Column(
         children: [
           Expanded(
@@ -241,6 +344,12 @@ class _CameraScreenState extends State<CameraScreen> {
               onPressed: _showImageSourceSelection,
               backgroundColor: Colors.green,
               child: Icon(Icons.photo_library)
+            ),
+            SizedBox(width: 20),
+            FloatingActionButton(
+              onPressed: _showLanguageSelection,
+              backgroundColor: Colors.orange,
+              child: Icon(Icons.language)
             ),
           ],
         ),

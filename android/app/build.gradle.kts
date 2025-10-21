@@ -37,16 +37,14 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
-    
-    dependencies {
-    // ... dependensi yang sudah ada mungkin dari Flutter
 
-    // Tambahkan paket bahasa yang Anda perlukan di sini
-    implementation("com.google.mlkit:text-recognition-chinese:16.0.0")
-    implementation("com.google.mlkit:text-recognition-devanagari:16.0.0")
-    implementation("com.google.mlkit:text-recognition-japanese:16.0.0")
-    implementation("com.google.mlkit:text-recognition-korean:16.0.0")
-}
+    dependencies {
+        implementation("com.google.mlkit:text-recognition:16.0.1")
+        implementation("com.google.mlkit:text-recognition-chinese:16.0.1")
+        implementation("com.google.mlkit:text-recognition-devanagari:16.0.1")
+        implementation("com.google.mlkit:text-recognition-japanese:16.0.1")
+        implementation("com.google.mlkit:text-recognition-korean:16.0.1")
+    }
 }
 
 flutter {
