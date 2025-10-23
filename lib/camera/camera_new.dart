@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
@@ -86,47 +88,50 @@ class _CameraScreenState extends State<CameraScreen> {
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Pilih Bahasa'),
-          content: SingleChildScrollView(
-            child: Column(
-              children: [
-                ListTile(
-                  title: Text('English, Indonesia, dll'),
-                  onTap: () {
-                    Navigator.pop(context);
-                    _changeLanguage(TextRecognitionScript.latin);
-                  },
-                ),
-                ListTile(
-                  title: Text('Chinese'),
-                  onTap: () {
-                    Navigator.pop(context);
-                    _changeLanguage(TextRecognitionScript.chinese);
-                  },
-                ),
-                ListTile(
-                  title: Text('Devanagari'),
-                  onTap: () {
-                    Navigator.pop(context);
-                    _changeLanguage(TextRecognitionScript.devanagiri);
-                  },
-                ),
-                ListTile(
-                  title: Text('Japanese'),
-                  onTap: () {
-                    Navigator.pop(context);
-                    _changeLanguage(TextRecognitionScript.japanese);
-                  },
-                ),
-                ListTile(
-                  title: Text('Korean'),
-                  onTap: () {
-                    Navigator.pop(context);
-                    _changeLanguage(TextRecognitionScript.korean);
-                  },
-                ),
-              ],
+        return BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+          child: AlertDialog(
+            title: Text('Pilih Bahasa'),
+            content: SingleChildScrollView(
+              child: Column(
+                children: [
+                  ListTile(
+                    title: Text('English, Indonesia, dll'),
+                    onTap: () {
+                      Navigator.pop(context);
+                      _changeLanguage(TextRecognitionScript.latin);
+                    },
+                  ),
+                  ListTile(
+                    title: Text('Chinese'),
+                    onTap: () {
+                      Navigator.pop(context);
+                      _changeLanguage(TextRecognitionScript.chinese);
+                    },
+                  ),
+                  ListTile(
+                    title: Text('Devanagari'),
+                    onTap: () {
+                      Navigator.pop(context);
+                      _changeLanguage(TextRecognitionScript.devanagiri);
+                    },
+                  ),
+                  ListTile(
+                    title: Text('Japanese'),
+                    onTap: () {
+                      Navigator.pop(context);
+                      _changeLanguage(TextRecognitionScript.japanese);
+                    },
+                  ),
+                  ListTile(
+                    title: Text('Korean'),
+                    onTap: () {
+                      Navigator.pop(context);
+                      _changeLanguage(TextRecognitionScript.korean);
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         );
