@@ -13,6 +13,19 @@ dependencies:
   camera: ^0.11.2
   image_picker: ^1.2.0
   permission_handler: ^12.0.1
+  flutter_native_splash: ^2.4.7
+
+#* SPLASH SCREEN
+flutter_native_splash:
+  android: true
+  fullscreen: true
+
+  color: "#FFFFFF"
+  image: images/logo.png
+
+  android_12:
+    color: "#FFFFFF"
+    image: images/logo.png
 
 dev_dependencies:
   flutter_test:
