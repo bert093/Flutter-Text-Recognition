@@ -83,6 +83,7 @@ class _CameraScreenState extends State<CameraScreen> {
 
   void _showLanguageSelection() { // Dialog Language Selection
     showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
