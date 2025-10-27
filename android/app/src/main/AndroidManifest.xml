@@ -3,7 +3,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/> <!-- BACA STORAGE -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/> <!-- NULIS KE STORAGE -->
     <application
-        android:label="flutter_text_recognition"
+        android:label="QuickOCR"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
