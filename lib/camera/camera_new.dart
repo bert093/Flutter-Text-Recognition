@@ -91,40 +91,40 @@ class _CameraScreenState extends State<CameraScreen> {
         return BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
           child: AlertDialog(
-            title: Text('Pilih Bahasa'),
+            title: const Text('Pilih Bahasa'),
             content: SingleChildScrollView(
               child: Column(
                 children: [
                   ListTile(
-                    title: Text('English, Indonesia, dll'),
+                    title: const Text('English, Indonesia, dll'),
                     onTap: () {
                       Navigator.pop(context);
                       _changeLanguage(TextRecognitionScript.latin);
                     },
                   ),
                   ListTile(
-                    title: Text('Chinese'),
+                    title: const Text('Chinese'),
                     onTap: () {
                       Navigator.pop(context);
                       _changeLanguage(TextRecognitionScript.chinese);
                     },
                   ),
                   ListTile(
-                    title: Text('Devanagari'),
+                    title: const Text('Devanagari'),
                     onTap: () {
                       Navigator.pop(context);
                       _changeLanguage(TextRecognitionScript.devanagiri);
                     },
                   ),
                   ListTile(
-                    title: Text('Japanese'),
+                    title: const Text('Japanese'),
                     onTap: () {
                       Navigator.pop(context);
                       _changeLanguage(TextRecognitionScript.japanese);
                     },
                   ),
                   ListTile(
-                    title: Text('Korean'),
+                    title: const Text('Korean'),
                     onTap: () {
                       Navigator.pop(context);
                       _changeLanguage(TextRecognitionScript.korean);
@@ -148,16 +148,16 @@ class _CameraScreenState extends State<CameraScreen> {
           child: Wrap(
             children: [
               ListTile(
-                leading: Icon(Icons.photo_library),
-                title: Text('Dari Galeri'),
+                leading: const Icon(Icons.photo_library),
+                title: const Text('Dari Galeri'),
                 onTap: () {
                   Navigator.pop(context);
                   _pickImageFromGallery();
                 },
               ),
               ListTile(
-                leading: Icon(Icons.photo_camera),
-                title: Text('Ambil Foto'),
+                leading: const Icon(Icons.photo_camera),
+                title: const Text('Ambil Foto'),
                 onTap: () {
                   Navigator.pop(context);
                   _pickImageFromCamera();
@@ -269,7 +269,7 @@ class _CameraScreenState extends State<CameraScreen> {
   @override
   Widget build(BuildContext context) {
     if (!_controller.value.isInitialized) {
-      return Scaffold(
+      return const Scaffold(
         body: Center(child: CircularProgressIndicator()),
       );
     }
@@ -279,7 +279,7 @@ class _CameraScreenState extends State<CameraScreen> {
         actions: [
           DropdownButton<TextRecognitionScript>( //* Dropdown button untuk pilihan bahasa
             value: _currentScript,
-            icon: Icon(Icons.language, color: Colors.black),
+            icon: const Icon(Icons.language, color: Colors.black),
             dropdownColor: Colors.blue,
             onChanged: (TextRecognitionScript? newScript) {
               if (newScript != null) {
@@ -287,29 +287,29 @@ class _CameraScreenState extends State<CameraScreen> {
               }
             },
             items: [
-              DropdownMenuItem(
+              const DropdownMenuItem(
                 value: TextRecognitionScript.latin,
                 child: Text('Latin', style: TextStyle(color: Colors.black)),
               ),
-              DropdownMenuItem(
+              const DropdownMenuItem(
                 value: TextRecognitionScript.chinese,
                 child: Text('Chinese', style: TextStyle(color: Colors.black)),
               ),
-              DropdownMenuItem(
+              const DropdownMenuItem(
                 value: TextRecognitionScript.devanagiri,
                 child: Text('Devanagiri', style: TextStyle(color: Colors.black)),
               ),
-              DropdownMenuItem(
+              const DropdownMenuItem(
                 value: TextRecognitionScript.japanese,
                 child: Text('Japanese', style: TextStyle(color: Colors.black)),
               ),
-              DropdownMenuItem(
+              const DropdownMenuItem(
                 value: TextRecognitionScript.korean,
                 child: Text('Korean', style: TextStyle(color: Colors.black)),
               ),
             ],
           ),
-          SizedBox(width: 20),
+          const SizedBox(width: 20),
         ],
       ),
       body: Column(
@@ -321,11 +321,11 @@ class _CameraScreenState extends State<CameraScreen> {
           Expanded(
             flex: 1,
             child: Container(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               child: SingleChildScrollView(
                 child: Text(
                   _recognizedText,
-                  style: TextStyle(fontSize: 16),
+                  style: const TextStyle(fontSize: 16),
                 ),
               ),
             ),
@@ -333,7 +333,7 @@ class _CameraScreenState extends State<CameraScreen> {
         ],
       ),
       floatingActionButton: Padding(
-        padding: EdgeInsets.only(left: 30),
+        padding: const EdgeInsets.only(left: 30),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -342,20 +342,20 @@ class _CameraScreenState extends State<CameraScreen> {
               backgroundColor: _isProcessing ? Colors.grey: Colors.blue,
               elevation: 20, // biar ada shadow effect pada icon
               child: _isProcessing
-                  ? CircularProgressIndicator(color: Colors.white)
-                  : Icon(Icons.camera)
+                  ? const CircularProgressIndicator(color: Colors.white)
+                  : const Icon(Icons.camera)
             ),
-            SizedBox(width: 20),
+            const SizedBox(width: 20),
             FloatingActionButton(
               onPressed: _showImageSourceSelection,
               backgroundColor: Colors.green,
-              child: Icon(Icons.photo_library)
+              child: const Icon(Icons.photo_library)
             ),
-            SizedBox(width: 20),
+            const SizedBox(width: 20),
             FloatingActionButton(
               onPressed: _showLanguageSelection,
               backgroundColor: Colors.orange,
-              child: Icon(Icons.language)
+              child: const Icon(Icons.language)
             ),
           ],
         ),

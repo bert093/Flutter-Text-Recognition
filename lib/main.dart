@@ -12,7 +12,7 @@ Future<void> main() async {
   await Permission.storage.request();
 
   cameras = await availableCameras();
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
