@@ -1,22 +1,18 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'package:camera/camera.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:image_picker/image_picker.dart';
 
-class CameraScreen extends StatefulWidget {
-  const CameraScreen({super.key, required this.cameras});
-  final List<CameraDescription> cameras;
+class TextRecognitionScreen extends StatefulWidget {
+  const TextRecognitionScreen({super.key});
   
   @override
-  _CameraScreenState createState() => _CameraScreenState();
+  _TextRecognitionScreenState createState() => _TextRecognitionScreenState();
 }
 
-class _CameraScreenState extends State<CameraScreen> {
-  late CameraController _controller;
+class _TextRecognitionScreenState extends State<TextRecognitionScreen> {
   late TextRecognizer _textRecognizer;
-  String _recognizedText = 'Tekan capture untuk scan teks';
+  String _recognizedText = 'Pilih gambar untuk memulai scan teks';
   bool _isProcessing = false;
 
   TextRecognitionScript _currentScript = TextRecognitionScript.latin;
@@ -24,8 +20,6 @@ class _CameraScreenState extends State<CameraScreen> {
   @override
   void initState() {
     super.initState();
-    _initializeCamera();
-    // _textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
     _textRecognizer = TextRecognizer(script: _currentScript);
   }
 
@@ -33,57 +27,13 @@ class _CameraScreenState extends State<CameraScreen> {
   void _changeLanguage(TextRecognitionScript newScript) {
     _textRecognizer.close();
 
-    // buat recognizer baru dengan bahasa yang ingin dipilih
     setState(() {
       _currentScript = newScript;
       _textRecognizer = TextRecognizer(script: _currentScript);
     });
   }
 
-  void _initializeCamera() async {
-    _controller = CameraController(
-      widget.cameras[0], 
-      ResolutionPreset.max
-    );
-    
-    await _controller.initialize();
-    if (mounted) setState(() {});
-  }
-
-  void _captureAndRecognize() async {
-    if (_isProcessing) return;
-    
-    setState(() {
-      _isProcessing = true;
-      _recognizedText = 'Memproses gambar...';
-    });
-    
-    try {
-      final XFile picture = await _controller.takePicture();
-      await _processImageForTextRecognition(picture.path);
-      final inputImage = InputImage.fromFilePath(picture.path);
-      final RecognizedText recognizedText = await _textRecognizer.processImage(inputImage);
-      
-      String fullText = '';
-      for (TextBlock block in recognizedText.blocks) {
-        for (TextLine line in block.lines) {
-          fullText += '${line.text}\n';
-        }
-      }
-
-      setState(() {
-        _recognizedText = fullText.isEmpty ? 'Tidak ada teks terdeteksi' : fullText;
-      });
-    } catch (e) {
-      setState(() {
-        _recognizedText = 'Error: $e';
-      });
-    } finally {
-      setState(() => _isProcessing = false);
-    }
-  }
-
-  void _showLanguageSelection() { // Dialog Language Selection
+  void _showLanguageSelection() {
     showDialog(
       barrierDismissible: false,
       context: context,
@@ -139,7 +89,7 @@ class _CameraScreenState extends State<CameraScreen> {
     );
   }
 
-  // memilih sumber gambar
+  // memilih sumber gambar (galeri atau camera)
   void _showImageSourceSelection() {
     showModalBottomSheet(
       context: context,
@@ -177,10 +127,9 @@ class _CameraScreenState extends State<CameraScreen> {
       final XFile? image = await picker.pickImage(source: ImageSource.gallery);
 
       if (image != null) {
-        _processImageForTextRecognition(image.path);
+        await _processImageForTextRecognition(image.path);
       }
     } catch (e) {
-      print('Error picking image from gallery: $e');
       setState(() {
         _recognizedText = 'Error: Gagal memilih gambar dari galeri';
       });
@@ -194,17 +143,16 @@ class _CameraScreenState extends State<CameraScreen> {
       final XFile? image = await picker.pickImage(source: ImageSource.camera);
 
       if (image != null) {
-        _processImageForTextRecognition(image.path);
+        await _processImageForTextRecognition(image.path);
       }
     } catch (e) {
-      print('Error taking picture: $e');
       setState(() {
         _recognizedText = 'Error: Gagal mengambil gambar';
       });
     }
   }
 
-  // memproses gambar dan print ke terminal
+  // memproses gambar
   Future<void> _processImageForTextRecognition(String imagePath) async {
     if (_isProcessing) return;
 
@@ -215,38 +163,15 @@ class _CameraScreenState extends State<CameraScreen> {
 
     try {
       final inputImage = InputImage.fromFilePath(imagePath);
-      final textRecognizer = TextRecognizer(
-        script: TextRecognitionScript.latin,
-      );
-      final RecognizedText recognizedText = await textRecognizer.processImage(
-        inputImage,
-      );
-
+      final RecognizedText recognizedText = await _textRecognizer.processImage(inputImage);
       String fullText = '';
 
-      // Loop melalui semua blok teks yang terdeteksi
+      // gunakan variable recognizedText untuk ekstraksi teks
       for (TextBlock block in recognizedText.blocks) {
-        print('=== BLOCK TEXT ===');
-        print(block.text);
-        print('==================');
-
         for (TextLine line in block.lines) {
           fullText += '${line.text}\n';
-
-          // Print setiap line ke terminal
-          print('Line: ${line.text}');
-
-          // Jika ingin detail lebih lanjut, bisa print setiap element
-          for (TextElement element in line.elements) {
-            print('  Element: ${element.text}');
-          }
         }
       }
-
-      // Print keseluruhan teks ke terminal
-      print('=== HASIL EKSTRAKSI TEKS LENGKAP ===');
-      print(fullText);
-      print('=====================================');
 
       setState(() {
         _recognizedText = fullText.isEmpty
@@ -254,10 +179,7 @@ class _CameraScreenState extends State<CameraScreen> {
             : fullText;
       });
 
-      // Tutup text recognizer untuk menghindari memory leak
-      textRecognizer.close();
     } catch (e) {
-      print('Error processing image: $e');
       setState(() {
         _recognizedText = 'Error: Gagal memproses gambar';
       });
@@ -268,19 +190,14 @@ class _CameraScreenState extends State<CameraScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (!_controller.value.isInitialized) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
-    }
-
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.blue,
         actions: [
-          DropdownButton<TextRecognitionScript>( //* Dropdown button untuk pilihan bahasa
+          DropdownButton<TextRecognitionScript>(
             value: _currentScript,
             icon: const Icon(Icons.language, color: Colors.black),
-            dropdownColor: Colors.blue,
+            dropdownColor: Colors.white,
             onChanged: (TextRecognitionScript? newScript) {
               if (newScript != null) {
                 _changeLanguage(newScript);
@@ -309,19 +226,35 @@ class _CameraScreenState extends State<CameraScreen> {
               ),
             ],
           ),
-          const SizedBox(width: 20),
+          const SizedBox(width: 16),
         ],
       ),
       body: Column(
         children: [
-          Expanded(
-            flex: 3,
-            child: CameraPreview(_controller),
+          // Header dengan instruksi
+          Container(
+            padding: const EdgeInsets.all(16),
+            child: const Column(
+              children: [
+                SizedBox(height: 8),
+                Text(
+                  'Pilih gambar dari galeri atau ambil foto baru untuk mengekstrak teks',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                ),
+              ],
+            ),
           ),
+          
+          // Area hasil teks
           Expanded(
-            flex: 1,
             child: Container(
+              margin: const EdgeInsets.all(16),
               padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey.shade400),
+                borderRadius: BorderRadius.circular(12),
+              ),
               child: SingleChildScrollView(
                 child: Text(
                   _recognizedText,
@@ -333,29 +266,23 @@ class _CameraScreenState extends State<CameraScreen> {
         ],
       ),
       floatingActionButton: Padding(
-        padding: const EdgeInsets.only(left: 30),
+        padding: const EdgeInsets.only(bottom: 20),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            FloatingActionButton(
-              onPressed: _captureAndRecognize,
-              backgroundColor: _isProcessing ? Colors.grey: Colors.blue,
-              elevation: 20, // biar ada shadow effect pada icon
-              child: _isProcessing
-                  ? const CircularProgressIndicator(color: Colors.white)
-                  : const Icon(Icons.camera)
-            ),
             const SizedBox(width: 20),
             FloatingActionButton(
               onPressed: _showImageSourceSelection,
-              backgroundColor: Colors.green,
-              child: const Icon(Icons.photo_library)
+              backgroundColor: Colors.blue,
+              elevation: 10,
+              child: const Icon(Icons.add_photo_alternate, color: Colors.black)
             ),
             const SizedBox(width: 20),
             FloatingActionButton(
               onPressed: _showLanguageSelection,
               backgroundColor: Colors.orange,
-              child: const Icon(Icons.language)
+              elevation: 10,
+              child: const Icon(Icons.language, color: Colors.black)
             ),
           ],
         ),
@@ -365,7 +292,6 @@ class _CameraScreenState extends State<CameraScreen> {
 
   @override
   void dispose() {
-    _controller.dispose();
     _textRecognizer.close();
     super.dispose();
   }

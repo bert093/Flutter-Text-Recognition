@@ -11,7 +11,6 @@ Future<void> main() async {
   await Permission.camera.request(); // permission_handler
   await Permission.storage.request();
 
-  cameras = await availableCameras();
   runApp(const MyApp());
 }
 
@@ -20,10 +19,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Text Recognition',
-      home: CameraScreen(cameras: cameras),
+      home: TextRecognitionScreen(),
     );
   }
 }
