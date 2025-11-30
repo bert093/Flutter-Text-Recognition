@@ -256,7 +256,7 @@ class _TextRecognitionScreenState extends State<TextRecognitionScreen> {
                 borderRadius: BorderRadius.circular(12),
               ),
               child: SingleChildScrollView(
-                child: Text(
+                child: SelectableText(
                   _recognizedText,
                   style: const TextStyle(fontSize: 16),
                 ),
